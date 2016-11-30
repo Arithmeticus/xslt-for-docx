@@ -129,8 +129,8 @@
         <!-- Ordinarily, this template would be a function, but saving result documents always fails in the context of a function. -->
         <xsl:param name="docx-parts" as="document-node()*"/>
         <xsl:param name="resolved-uri" as="xs:string"/>
-        <xsl:for-each select="$docx-parts[*/@jar-path]">
-            <xsl:result-document href="{concat('zip:', $resolved-uri, '!/', /*/@jar-path)}">
+        <xsl:for-each select="$docx-parts/*[@jar-path]">
+            <xsl:result-document href="{concat('zip:', $resolved-uri, '!/', @jar-path)}">
                 <xsl:document><xsl:apply-templates select="." mode="clean-up-word-file-before-repackaging"/></xsl:document>
             </xsl:result-document>
         </xsl:for-each>
