@@ -124,14 +124,16 @@
     <!-- SAVING WORD DOCUMENT FILES -->
 
     <xsl:template name="tan:save-docx">
-        <!-- Input: a sequence of documents, each with @jar-path stamped in the root element (the result of tan:open-docx()); a uri for the new Word document -->
+        <!-- Input: a sequence of documents, each with @jar-path stamped in the root element (the result of tan:open-docx()); a resolved uri for the new Word document -->
         <!-- Output: a file saved at the place located -->
         <!-- Ordinarily, this template would be a function, but saving result documents always fails in the context of a function. -->
-        <xsl:param name="components-to-save-in-a-word-document" as="document-node()*"/>
-        <xsl:param name="uri" as="xs:string"/>
-        <xsl:result-document href="{concat('zip:', $uri, '!/', /*/@jar-path)}">
-            <xsl:apply-templates select="." mode="clean-up-word-file-before-repackaging"/>
-        </xsl:result-document>
+        <xsl:param name="docx-parts" as="document-node()*"/>
+        <xsl:param name="resolved-uri" as="xs:string"/>
+        <xsl:for-each select="$docx-parts[*/@jar-path]">
+            <xsl:result-document href="{concat('zip:', $resolved-uri, '!/', /*/@jar-path)}">
+                <xsl:document><xsl:apply-templates select="." mode="clean-up-word-file-before-repackaging"/></xsl:document>
+            </xsl:result-document>
+        </xsl:for-each>
     </xsl:template>
 
     <xsl:template match="*" mode="clean-up-word-file-before-repackaging">
