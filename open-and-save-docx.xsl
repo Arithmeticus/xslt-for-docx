@@ -25,8 +25,15 @@
     xmlns:dcmitype="http://purl.org/dc/dcmitype/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
 
-    <!-- Written December 2016 by Joel Kalvesmaki, released under a Creative Commons 4.0SA license. -->
+    <!-- Written 30 November 2016 by Joel Kalvesmaki, released under a Creative Commons 4.0SA license. -->
 
+    <!-- These XSLT functions allow one to retrieve the XML documents that are part of a Word document and save component parts as a new Word document. -->
+    
+    <!-- All nontextual content is necessarily ignored, since XSLT deals only with texts. One work-around is to link to nontextual content, and not embed it. -->
+    
+    <!-- A key factor in making these functions successful is the introduction of @jar-path to the root element of every component XML document. The @jar-path indicates where in the hierarchy of the Word file each document sits. Only XML documents that retain @jar-path can be used by tan:save-docx(), and in those cases, the provisional @jar-path is removed before zipping. -->
+    
+    <!-- To see how these functions can be used, e.g., to alter a Word document using regular expressions, see the example subdirectory. -->
 
     <!-- OPENING WORD DOCUMENT FILES -->
 
@@ -92,6 +99,8 @@
         </xsl:choose>
     </xsl:function>
     <xsl:function name="tan:extract-docx-component" as="document-node()?">
+        <!-- Input: the base jar uri for a Word document; a path to a component part of a Word document -->
+        <!-- Output: the XML document itself, but with @jar-path stamped into the root element -->
         <xsl:param name="source-jar-uri" as="xs:string"/>
         <xsl:param name="component-path" as="xs:string"/>
         <xsl:variable name="extracted-doc" as="document-node()?"
@@ -124,9 +133,9 @@
     <!-- SAVING WORD DOCUMENT FILES -->
 
     <xsl:template name="tan:save-docx">
-        <!-- Input: a sequence of documents, each with @jar-path stamped in the root element (the result of tan:open-docx()); a resolved uri for the new Word document -->
+        <!-- Input: a sequence of documents that each have @jar-path stamped in the root element (the result of tan:open-docx()); a resolved uri for the new Word document -->
         <!-- Output: a file saved at the place located -->
-        <!-- Ordinarily, this template would be a function, but saving result documents always fails in the context of a function. -->
+        <!-- Ordinarily, this template would be a function, but <result-document> always fails in the context of a function. -->
         <xsl:param name="docx-parts" as="document-node()*"/>
         <xsl:param name="resolved-uri" as="xs:string"/>
         <xsl:for-each select="$docx-parts/*[@jar-path]">
@@ -146,7 +155,7 @@
         <!-- get rid of the special @jar-path we added, to automate repackaging in the right locations -->
         <xsl:copy>
             <xsl:copy-of select="@* except @jar-path"/>
-            <!-- copying the attributes should also ensure that namespace nodes are copied -->
+            <!-- copying the attributes should also ensure that namespace nodes are copied; Word will mark a file as corrupt if otiose namespace nodes aren't included -->
             <xsl:apply-templates mode="clean-up-word-file-before-repackaging"/>
         </xsl:copy>
     </xsl:template>
