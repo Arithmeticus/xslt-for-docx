@@ -120,12 +120,19 @@
     <xsl:template match="comment() | processing-instruction()" mode="stamp-docx-component-with-path clean-up-word-file-before-repackaging">
         <xsl:copy-of select="."/>
     </xsl:template>
+    <xsl:template match="*" mode="stamp-docx-component-with-path">
+        <xsl:copy>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:copy>
+    </xsl:template>
     <xsl:template match="/*" mode="stamp-docx-component-with-path">
         <xsl:param name="path" as="xs:string"/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:attribute name="jar-path" select="$path"/>
-            <xsl:copy-of select="node()"/>
+            <xsl:apply-templates mode="#current"/>
+            <!--<xsl:copy-of select="node()"/>-->
         </xsl:copy>
     </xsl:template>
 
