@@ -65,10 +65,8 @@
             select="tan:extract-docx-component($source-jar-uri, '_rels/.rels')"/>
         <xsl:variable name="source-word-rels"
             select="tan:extract-docx-component($source-jar-uri, 'word/_rels/document.xml.rels')"/>
-        <xsl:variable name="other-possible-word-rel-names" as="xs:string*">
-            <xsl:text>header2.xml.rels</xsl:text>
-            <!--<xsl:text>settings.xml.rels</xsl:text>-->
-        </xsl:variable>
+        <xsl:variable name="other-possible-word-rel-names" as="xs:string*"
+            select="('endnotes.xml.rels', 'footnotes.xml.rels', 'footer1.xml.rels', 'footer2.xml.rels', 'header1.xml.rels', 'header2.xml.rels', 'settings.xml.rels')"/>
         <xsl:variable name="source-word-rels-misc" as="document-node()*">
             <xsl:for-each select="$other-possible-word-rel-names">
                 <xsl:copy-of
