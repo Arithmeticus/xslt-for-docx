@@ -58,19 +58,37 @@
         <xsl:variable name="static-base-uri" select="static-base-uri()"/>
         <xsl:variable name="best-uri" select="($input-base-uri, $static-base-uri)[1]"/>
         <xsl:variable name="this-href" select="$element-with-attr-href/@href"/>
+        <xsl:variable name="this-extension" select="replace($this-href, '^.+\.(\w+)$', '$1')"/>
         <xsl:variable name="source-uri" select="resolve-uri($this-href, $best-uri)"/>
         <xsl:variable name="source-jar-uri" select="concat('zip:', $source-uri, '!/')"/>
         <xsl:variable name="source-root-rels-path" select="concat($source-jar-uri, '_rels/.rels')"/>
+        <xsl:variable name="source-specific-main-path"
+            select="
+                if ($this-extension = 'xlsx') then
+                    'xl/'
+                else
+                    'word/'"
+        />
+        <xsl:variable name="source-specific-rels-path"
+            select="concat($source-specific-main-path, '_rels/')"/>
+        <xsl:variable name="source-specific-rels"
+            select="
+                if ($this-extension = 'xlsx') then
+                    concat($source-specific-rels-path, 'workbook.xml.rels')
+                else
+                    concat($source-specific-rels-path, 'document.xml.rels')"
+        />
         <xsl:variable name="source-root-rels"
             select="tan:extract-docx-component($source-jar-uri, '_rels/.rels')"/>
         <xsl:variable name="source-word-rels"
-            select="tan:extract-docx-component($source-jar-uri, 'word/_rels/document.xml.rels')"/>
+            select="tan:extract-docx-component($source-jar-uri, $source-specific-rels)"/>
         <xsl:variable name="other-possible-word-rel-names" as="xs:string*"
             select="('endnotes.xml.rels', 'footnotes.xml.rels', 'footer1.xml.rels', 'footer2.xml.rels', 'header1.xml.rels', 'header2.xml.rels', 'settings.xml.rels')"/>
         <xsl:variable name="source-word-rels-misc" as="document-node()*">
             <xsl:for-each select="$other-possible-word-rel-names">
                 <xsl:copy-of
-                    select="tan:extract-docx-component($source-jar-uri, concat('word/_rels/', .))"/>
+                    select="tan:extract-docx-component($source-jar-uri, concat($source-specific-rels-path, .))"
+                />
             </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="source-content-types"
@@ -82,7 +100,7 @@
                     tan:extract-docx-component($source-jar-uri, $i),
                 for $j in $source-word-rels//@Target[matches(., '\.xml$')]
                 return
-                    tan:extract-docx-component($source-jar-uri, concat('word/', $j)))"/>
+                    tan:extract-docx-component($source-jar-uri, concat($source-specific-main-path, $j)))"/>
         <xsl:choose>
             <xsl:when test="not(doc-available($source-root-rels-path))">
                 <xsl:document>
@@ -130,7 +148,7 @@
             <xsl:copy-of select="@*"/>
             <xsl:attribute name="jar-path" select="$path"/>
             <xsl:apply-templates mode="#current"/>
-            <!--<xsl:copy-of select="node()"/>-->
+            <!-- We do not use <xsl:copy-of select="node()"/> because docx files are sensitive to namespace attributes -->
         </xsl:copy>
     </xsl:template>
 
