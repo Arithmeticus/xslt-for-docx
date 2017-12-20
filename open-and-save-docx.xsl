@@ -51,15 +51,27 @@
         <xsl:copy-of select="doc-available($source-root)"/>
     </xsl:function>
     <xsl:function name="tan:open-docx" as="document-node()*">
-        <!-- Input: any element with the attribute @href pointing to a Microsoft Office file -->
+        <!-- Input: a contextual element with the attribute @href pointing to a Microsoft Office file, or a string representing an absolute uri -->
         <!-- Output: a sequence of the XML documents found inside the input (the main .rels file first, then the document .rels, then the source content types, then every file ending in .xml) To facilitate the reconstruction of the Word file, every extracted document will be stamped with @jar-path, with the local path and name of the component. -->
-        <xsl:param name="element-with-attr-href" as="element()?"/>
-        <xsl:variable name="input-base-uri" select="base-uri($element-with-attr-href)"/>
+        <xsl:param name="element-with-attr-href-or-string-with-absolute-uri" as="item()?"/>
+        <xsl:variable name="input-base-uri"
+            select="
+                if ($element-with-attr-href-or-string-with-absolute-uri instance of node()) then
+                    base-uri($element-with-attr-href-or-string-with-absolute-uri)
+                else
+                    ()"
+        />
         <xsl:variable name="static-base-uri" select="static-base-uri()"/>
-        <xsl:variable name="best-uri" select="($input-base-uri, $static-base-uri)[1]"/>
-        <xsl:variable name="this-href" select="$element-with-attr-href/@href"/>
-        <xsl:variable name="this-extension" select="replace($this-href, '^.+\.(\w+)$', '$1')"/>
-        <xsl:variable name="source-uri" select="resolve-uri($this-href, $best-uri)"/>
+        <xsl:variable name="best-base-uri" select="($input-base-uri, $static-base-uri)[1]"/>
+        <xsl:variable name="intended-uri" as="xs:string"
+            select="
+                if ($element-with-attr-href-or-string-with-absolute-uri instance of node()) then
+                    ($element-with-attr-href-or-string-with-absolute-uri/@href, string($element-with-attr-href-or-string-with-absolute-uri))[1]
+                else
+                    string($element-with-attr-href-or-string-with-absolute-uri)"
+        />
+        <xsl:variable name="this-extension" select="replace($intended-uri, '^.+\.(\w+)$', '$1')"/>
+        <xsl:variable name="source-uri" select="resolve-uri($intended-uri, $best-base-uri)"/>
         <xsl:variable name="source-jar-uri" select="concat('zip:', $source-uri, '!/')"/>
         <xsl:variable name="source-root-rels-path" select="concat($source-jar-uri, '_rels/.rels')"/>
         <xsl:variable name="source-specific-main-path"
@@ -126,13 +138,16 @@
                 else
                     ()"/>
         <xsl:if test="exists($extracted-doc)">
-            <xsl:document>
-                <xsl:apply-templates select="$extracted-doc" mode="stamp-docx-component-with-path">
-                    <xsl:with-param name="path" select="$component-path"/>
-                </xsl:apply-templates>
-            </xsl:document>
+            <xsl:apply-templates select="$extracted-doc" mode="stamp-docx-component-with-path">
+                <xsl:with-param name="path" select="$component-path" tunnel="yes"/>
+            </xsl:apply-templates>
         </xsl:if>
     </xsl:function>
+    <xsl:template match="document-node()" mode="stamp-docx-component-with-path">
+        <xsl:document>
+            <xsl:apply-templates mode="#current"/>
+        </xsl:document>
+    </xsl:template>
     <xsl:template match="comment() | processing-instruction()" mode="stamp-docx-component-with-path clean-up-word-file-before-repackaging">
         <xsl:copy-of select="."/>
     </xsl:template>
@@ -143,7 +158,7 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="/*" mode="stamp-docx-component-with-path">
-        <xsl:param name="path" as="xs:string"/>
+        <xsl:param name="path" as="xs:string" tunnel="yes"/>
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:attribute name="jar-path" select="$path"/>
