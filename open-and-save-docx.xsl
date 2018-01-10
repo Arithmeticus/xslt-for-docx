@@ -40,12 +40,23 @@
     <xsl:function name="tan:docx-file-available" as="xs:boolean">
         <!-- Input: any element with an @href -->
         <!-- Output: a boolean indicating whether the Word document is available -->
-        <xsl:param name="element-with-attr-href" as="element()?"/>
-        <xsl:variable name="input-base-uri" select="base-uri($element-with-attr-href)"/>
+        <xsl:param name="element-with-attr-href-or-string-with-absolute-uri" as="item()?"/>
+        <xsl:variable name="input-base-uri"
+            select="
+                if ($element-with-attr-href-or-string-with-absolute-uri instance of node()) then
+                    base-uri($element-with-attr-href-or-string-with-absolute-uri)
+                else
+                    ()"/>
         <xsl:variable name="static-base-uri" select="static-base-uri()"/>
-        <xsl:variable name="best-uri" select="($input-base-uri, $static-base-uri)[1]"/>
-        <xsl:variable name="this-href" select="$element-with-attr-href/@href"/>
-        <xsl:variable name="source-uri" select="resolve-uri($this-href, $best-uri)"/>
+        <xsl:variable name="best-base-uri" select="($input-base-uri, $static-base-uri)[1]"/>
+        <xsl:variable name="intended-uri" as="xs:string"
+            select="
+            if ($element-with-attr-href-or-string-with-absolute-uri instance of node()) then
+            ($element-with-attr-href-or-string-with-absolute-uri/@href, string($element-with-attr-href-or-string-with-absolute-uri))[1]
+            else
+            string($element-with-attr-href-or-string-with-absolute-uri)"
+        />
+        <xsl:variable name="source-uri" select="resolve-uri($intended-uri, $best-base-uri)"/>
         <xsl:variable name="source-jar-uri" select="concat('zip:', $source-uri, '!/')"/>
         <xsl:variable name="source-root" select="concat($source-jar-uri, '_rels/.rels')"/>
         <xsl:copy-of select="doc-available($source-root)"/>
