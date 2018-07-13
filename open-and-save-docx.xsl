@@ -175,7 +175,7 @@
         <xsl:copy>
             <xsl:copy-of select="@*"/>
             <xsl:attribute name="jar-path" select="$path"/>
-            <xsl:attribute name="base-uri" select="$base-uri"/>
+            <xsl:attribute name="xml:base" select="$base-uri"/>
             <xsl:apply-templates mode="#current"/>
             <!-- We do not use <xsl:copy-of select="node()"/> because docx files are sensitive to namespace attributes -->
         </xsl:copy>
@@ -204,9 +204,9 @@
         </xsl:copy>
     </xsl:template>
     <xsl:template match="/*" mode="clean-up-word-file-before-repackaging">
-        <!-- get rid of the special @jar-path and @base-uri we added, to automate repackaging in the right locations -->
+        <!-- get rid of the special @jar-path and @xml:base we added, to automate repackaging in the right locations -->
         <xsl:copy>
-            <xsl:copy-of select="@* except (@jar-path, @base-uri)"/>
+            <xsl:copy-of select="@* except (@jar-path, @xml:base)"/>
             <!-- copying the attributes should also ensure that namespace nodes are copied; Word will mark a file as corrupt if otiose namespace nodes aren't included -->
             <xsl:apply-templates mode="clean-up-word-file-before-repackaging"/>
         </xsl:copy>
