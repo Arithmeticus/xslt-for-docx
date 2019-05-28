@@ -1,3 +1,1 @@
-This work is licensed under a Creative Commons Attribution 4.0 International License.
-
-Details of the license are at http://creativecommons.org/licenses/by/4.0/
+All software, code, and dependencies are released under a [GNU General Public License](https://opensource.org/licenses/GPL-3.0).
