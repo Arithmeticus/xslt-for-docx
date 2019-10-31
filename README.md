@@ -1,5 +1,5 @@
 # Open and Save Archive
-(_formerly **XSLT for DOCX**, **open and save docx**_)
+(_formerly **xslt for docx**)
 
 Joel Kalvesmaki, 2019 ([licensing information](LICENSE.md) | [changes](CHANGES.md))
 
@@ -11,17 +11,17 @@ XSLT to handle **docx** (Microsoft Word), **xlsx** (Microsoft Excel), **zip**, *
 
 The main spreadsheet is [open-and-save-archive.xsl](open-and-save-archive.xsl). The others, [open-and-save-xlsx.xsl](open-and-save-xlsx.xsl) and [open-and-save-docx.xsl](open-and-save-docx.xsl), are simply aliases. 
 
-No Ant. No XProc. XSLT for DOCX is simple, pure XSLT (3.0), tapping the power of [EXPath](http://expath.org).
+No Ant. No XProc. Open and Save Archive is simple, pure XSLT (3.0), tapping the power of [EXPath](http://expath.org).
 
 ## Examples
 
 Practical applications are featured in the example subdirectories, described here:
 
-1. [Unpacking and saving archives](example%201,%20unpacking%20and%20saving%20various%20archives): basic demonstration of how to fetch the component parts of an archive, then to repackage and save them. This example shows the variety of archive types that can be handled. The remaining examples deal with docx and xlsx files. 
+1. [Unpacking and saving archives](example%201,%20unpacking%20and%20saving%20various%20archives): basic demonstration of how to fetch the component parts of an archive, then to repackage and save them. This demonstration shows the variety of archive types that can be handled. The remaining ones (##2-5 below) deal only with docx and xlsx files. 
 1. [Plain text](example%202%2C%20get%20plain%20text): shows how to scrape multiple docx or xlsx files for their plain text content and concatenate it in a single file.
-1. [Replacing text via regular expressions](example%203%2C%20change%20with%20regular%20expressions): shows how to do a search and replace on a Word or Excel file using regular expressions. This example is important because regular expressions are non-existent in Excel, and quite deficient in Word. Finding and replacing text in Word is tricky, and I illustrate in this example what I call the Splintered Seas Technique. (with apologies to anyone who might have invented, used, and named a similar technique before me).  
-1. [Make form letters](example%204%2C%20make%20form%20letters): shows how to turn a template Word document and an XML database into form letters. This example is important because Word cannot easily handle data that does not fit the spreadsheet model, and does not have good tools for coordinating the data. In this example, you use XSLT to define variables of your choice, then you place those variables wherever you like within the docx template as simple plain text, e.g., *$family-name*. You can iterate over multiple values, and apply XSLT functions to change the data and its formatting as you like--things that are difficult or impossible to do in Word.
-1. [Anonymize documents](example%205,%20anonymize%20document): shows how to quickly scrub from the metadata the names of those who are credited writing a document or its comments or tracked changes. This is useful when returning to an auther a manuscript that has been through blind peer review, and you wish to preserve the anonymity of the writers. To my knowledge this functionality is missing from Word.
+1. [Replacing text via regular expressions](example%203%2C%20change%20with%20regular%20expressions): shows how to do a search and replace on a Word or Excel file using regular expressions. This example is important because regular expressions are non-existent in Excel, and quite deficient in Word. Finding and replacing text in Word is tricky, and I use and explain in this example what I call the Splintered Seas Technique (with apologies to anyone who might have invented, used, and named a similar technique before me).  
+1. [Make form letters](example%204%2C%20make%20form%20letters): shows how to turn a template Word document and an XML database into form letters. This example is important because Word cannot easily handle data that does not fit the spreadsheet model, and does not have good tools for coordinating and manipulating data. In this example, you use XSLT to define variables of your choice, then you type those variable names wherever you like within the docx template, e.g., *$family-name*. You can iterate over multiple values, and apply XSLT functions to change the data and its formatting as you like--things that are difficult or impossible to do in Word.
+1. [Anonymize documents](example%205,%20anonymize%20document): shows how to quickly scrub from the metadata the names of those who are credited writing a document or its comments or tracked changes. This is useful when returning to an author a manuscript that has been through blind peer review, and you wish to preserve the anonymity of the writers. To my knowledge this functionality is missing from Word.
 
 Under the hood, Word and Excel files can get quite complex. The XSLT files in the examples have been written specifically for the accompanying sample input. You may need to develop the code to handle the input you are working with.  
 
