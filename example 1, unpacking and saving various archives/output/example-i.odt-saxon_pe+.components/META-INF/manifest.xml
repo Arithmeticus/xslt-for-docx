@@ -1,0 +1,14 @@
+<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" xmlns:loext="urn:org:documentfoundation:names:experimental:office:xmlns:loext:1.0" manifest:version="1.2">
+ <manifest:file-entry manifest:full-path="/" manifest:version="1.2" manifest:media-type="application/vnd.oasis.opendocument.text"/>
+ <manifest:file-entry manifest:full-path="Configurations2/" manifest:media-type="application/vnd.sun.xml.ui.configuration"/>
+ <manifest:file-entry manifest:full-path="manifest.rdf" manifest:media-type="application/rdf+xml"/>
+ <manifest:file-entry manifest:full-path="styles.xml" manifest:media-type="text/xml"/>
+ <manifest:file-entry manifest:full-path="meta.xml" manifest:media-type="text/xml"/>
+ <manifest:file-entry manifest:full-path="settings.xml" manifest:media-type="text/xml"/>
+ <manifest:file-entry manifest:full-path="Pictures/100000000000008000000080BCF406C662AC1B66.png" manifest:media-type="image/png"/>
+ <manifest:file-entry manifest:full-path="Pictures/100002000000023F000002023679A00027579179.png" manifest:media-type="image/png"/>
+ <manifest:file-entry manifest:full-path="Pictures/2000000900003B680000352321034AEB43ECC700.svm" manifest:media-type="image/x-svm"/>
+ <manifest:file-entry manifest:full-path="layout-cache" manifest:media-type="application/binary"/>
+ <manifest:file-entry manifest:full-path="content.xml" manifest:media-type="text/xml"/>
+ <manifest:file-entry manifest:full-path="Thumbnails/thumbnail.png" manifest:media-type="image/png"/>
+</manifest:manifest>

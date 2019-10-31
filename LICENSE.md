@@ -1,1 +1,1 @@
-All software, code, and dependencies are released under a [GNU General Public License](https://opensource.org/licenses/GPL-3.0).
+Written by Joel Kalvesmaki. All software, code, and dependencies are released under a [GNU General Public License](https://opensource.org/licenses/GPL-3.0).

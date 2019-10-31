@@ -1,0 +1,43 @@
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="uid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:identifier id="uid">com.github.epub-testsuite.epub30-test-0301</dc:identifier>
+    <dc:description>These tests include starting the reading system and opening the titles, navigating the content, searching, and using bookmarks and notes.</dc:description>
+    <dc:title>Fundamental Accessibility Tests: Basic Functionality</dc:title>
+    <meta refines="title" property="title-type">main</meta>
+    <!-- repeat creator element for all contributors -->
+    <dc:creator>DAISY Consortium</dc:creator>
+    <dc:source>Page numbers added for test purposes.</dc:source>
+    <dc:language>en</dc:language>
+    <dc:subject>basic-functionality</dc:subject>
+    <meta property="dcterms:modified">2019-03-31T11:00:00Z</meta>
+    <meta property="schema:accessibilitySummary">The publication contains structural and page navigation. The publication meets WCAG 2.0 Level AA.</meta>
+    <meta property="schema:accessMode">textual</meta>
+    <meta property="schema:accessMode">visual</meta>
+    <meta property="schema:accessModeSufficient">textual</meta>
+    <meta property="schema:accessibilityFeature">structuralNavigation</meta>
+    <meta property="schema:version">1.0.0</meta>
+  </metadata>
+  <manifest>
+    <!-- css -->
+    <item href="css/base.css" media-type="text/css" id="css"/>
+    <!-- cover -->
+    <item id="cover_jpg" properties="cover-image" href="images/cover.jpg" media-type="image/jpeg"/>
+    <item id="cover" href="xhtml/cover.xhtml" media-type="application/xhtml+xml"/>
+    <!-- frontmatter -->
+    <item href="xhtml/nav.xhtml" id="nav" media-type="application/xhtml+xml" properties="nav"/>
+    <item href="xhtml/front.xhtml" id="front" media-type="application/xhtml+xml"/>
+    <!-- bodymatter -->
+    <!-- xhtml -->
+    <item href="xhtml/introduction.xhtml" id="introduction" media-type="application/xhtml+xml"/>
+    <item href="xhtml/Basic-functionality-tests.xhtml" id="xhtml-001" media-type="application/xhtml+xml"/>
+    <item href="xhtml/supplement.xhtml" id="xhtml-002" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine>
+    <itemref idref="cover"/>
+    <itemref idref="front"/>
+    <itemref idref="nav" linear="no"/>
+    <itemref idref="introduction"/>
+    <itemref idref="xhtml-001"/>
+    <itemref idref="xhtml-002"/>
+  </spine>
+</package>

@@ -1,0 +1,16 @@
+<_text>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#xD;
+&lt;?xml-stylesheet href="chrome://helloworld/skin/overlay.css" type="text/css"?&gt;&#xD;
+&lt;!DOCTYPE overlay SYSTEM "chrome://helloworld/locale/helloworld.dtd"&gt;&#xD;
+&lt;overlay id="helloworld-overlay"&#xD;
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"&gt;&#xD;
+  &lt;script src="overlay.js"/&gt;&#xD;
+  &lt;stringbundleset id="stringbundleset"&gt;&#xD;
+    &lt;stringbundle id="helloworld-strings" src="chrome://helloworld/locale/helloworld.properties"/&gt;&#xD;
+  &lt;/stringbundleset&gt;&#xD;
+&#xD;
+  &lt;menupopup id="menu_ToolsPopup"&gt;&#xD;
+    &lt;menuitem id="helloworld-hello" label="&amp;helloworld.label;" &#xD;
+              oncommand="helloworld.onMenuItemCommand(event);"/&gt;&#xD;
+  &lt;/menupopup&gt;&#xD;
+&lt;/overlay&gt;&#xD;
+</_text>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<donors>
+   <donor>
+      <id>joh-r</id>
+      <title>Mr.</title>
+      <name><given>Robert</given> M. <family>Johnson</family></name>
+      <address>
+         <line>325 North Cedar St.</line>
+         <line><city>Prattsville</city>, <state>MS</state>
+            <zip>38603</zip></line>
+      </address>
+      <email>r.johnson@example.com</email>
+      <donations>
+         <donation>
+            <date>2002-11-05</date>
+            <amount>14.99</amount>
+         </donation>
+         <donation>
+            <date>2003-01-15</date>
+            <amount>5.00</amount>
+            <comment>For January banquet.</comment>
+         </donation>
+         <donation>
+            <date>2003-08-01</date>
+            <amount>50.00</amount>
+         </donation>
+      </donations>
+   </donor>
+   <donor>
+      <id>ho-w</id>
+      <title>Dr.</title>
+      <name><family>Ho</family> <given>Wai</given></name>
+      <address>
+         <line>1744 Grammercy Lane</line>
+         <line>Houghton</line>
+         <line>Suffolk-on-Thames</line>
+         <line>Suffolk</line>
+         <line>M24 7V2</line>
+         <line>Great Britain</line>
+      </address>
+      <email>ex1@example.com</email>
+      <email>ex2@example.com</email>
+      <email>ex3@example.com</email>
+      <donations>
+         <donation>
+            <date>2001-07-25</date>
+            <amount>700.00</amount>
+         </donation>
+         <donation>
+            <date>2003-02-14</date>
+            <amount>28.00</amount>
+         </donation>
+         <donation>
+            <date>2003-03-25</date>
+            <amount>44.00</amount>
+         </donation>
+      </donations>
+   </donor>
+</donors>
