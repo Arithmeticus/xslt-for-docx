@@ -1,5 +1,5 @@
 # Open and Save Archive
-(_formerly **xslt for docx**)
+(_formerly **xslt for docx**_)
 
 Joel Kalvesmaki, 2019 ([licensing information](LICENSE.md) | [changes](CHANGES.md))
 
