@@ -11,7 +11,7 @@ XSLT to handle **docx** (Microsoft Word), **xlsx** (Microsoft Excel), **zip**, *
 
 The main spreadsheet is [open-and-save-archive.xsl](open-and-save-archive.xsl). The others, [open-and-save-xlsx.xsl](open-and-save-xlsx.xsl) and [open-and-save-docx.xsl](open-and-save-docx.xsl), are simply aliases. 
 
-No Ant. No XProc. XSLT for DOCX is simple, pure XSLT (3.0), tapping the power of [EXPath](http://expath.org).
+No Ant. No XProc. Open and Save Archive is simple, pure XSLT (3.0), tapping the power of [EXPath](http://expath.org).
 
 ## Examples
 
