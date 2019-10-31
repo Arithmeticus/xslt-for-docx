@@ -31,9 +31,11 @@ _(See the [main stylesheet](open-and-save-archive.xsl) for further notes.)_
 
 Functions are in the [Text Alignment Network (TAN)](http://textalign.net) namespace, `tag:textalign.net,2015:ns`.
 
+Saxon HE does not support extended functions, such as reading and writing binary files, or getting the contents of an archive. One must know how a particular archive is designed to navigate its contents. Currently only docx and xslx architecture is supported, but the library could be extended to support other file types. You are welcome to extend the stylesheets.
+
 Opening an archive (`tan:open-archive()`) returns its components as a sequence of XML documents. If a component is binary, it will be returned as a text node of the root element in base 64 binary. (With Saxon PE and EE, you can open the archive as a map, and keep it that way, if you like; see examples featuring `tan:extract-map($example-archives[1], $example-archive-entries-maps[1])`.) Each root element has temporary attributes `@xml:base` pointing to the resolved uri of the archive and `@_archive-path` pointing to the relative place of the component. 
 
-Saving an archive (`tan:save-archive()`) requires as input the archive components as a sequence of XML documents, each with an `@_archive-path` in the root element to indicate where in the archive the component should be placed.
+Saving an archive (`tan:save-archive()`) requires as input the archive components as a sequence of XML documents, each with an `@_archive-path` in the root element to indicate where in the archive the component should be placed. Currently the saved output is a single archive, with the components of originally nested archives not themselves archived. Preserving recursively nested archives may be supported in a future release.
 
 `tan:extract-map()` is my attempt to instantiate, enhance, and develop the EXPath function `arch:extract-map()`. See the stylesheet for more comments. 
 
