@@ -300,10 +300,11 @@
             an archive, so the algorithm has to be told what particular component to find. Because it was written for docx
              and xlsx files, this function looks only for the signature _rels/.rels.  -->
         <!-- The input url must be resolved. -->
+        <!-- We use the protocol jar: because it is recognized both by oXygen and by Saxon run on the command line -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
-        <xsl:variable name="source-archive-uri" select="concat('zip:', $source-uri, '!/')"/>
+        <xsl:variable name="source-archive-uri" select="concat('jar:', $source-uri, '!/')"/>
         <xsl:variable name="source-root" select="concat($source-archive-uri, '_rels/.rels')"/>
         <xsl:copy-of select="doc-available($source-root)"/>
     </xsl:function>
@@ -460,7 +461,7 @@
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
-        <xsl:variable name="source-archive-uri" select="'zip:' || $source-uri || '!/'"/>
+        <xsl:variable name="source-archive-uri" select="'jar:' || $source-uri || '!/'"/>
         
         <xsl:variable name="this-archive" as="xs:base64Binary?"
             select="tan:open-raw-archive($source-uri)"/>
@@ -498,7 +499,8 @@
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
-        <xsl:variable name="source-archive-uri" select="'zip:' || $source-uri || '!/'"/>
+        <!-- We use jar: as the protocol. zip: works only inside oXygen, wherease jar: works with oXygen and Saxon HE on the command line -->
+        <xsl:variable name="source-archive-uri" select="'jar:' || $source-uri || '!/'"/>
         <xsl:variable name="archive-content-types" as="document-node()?"
             select="tan:extract-archive-component($source-archive-uri, '[Content_Types].xml')"/>
         <xsl:variable name="archive-main-rels" as="document-node()?"
@@ -645,7 +647,7 @@
         <xsl:param name="resolved-uri" as="xs:string"/>
         <!-- Remove any prefix/suffix that has been set up for tan:save-archive without advanced functions -->
         <xsl:variable name="uri-prepped-for-direct-archiving"
-            select="replace($resolved-uri, '^zip:|[/!]+$', '')"/>
+            select="replace($resolved-uri, '^jar:|[/!]+$', '')"/>
         <xsl:variable name="this-target-subdirectory"
             select="replace($uri-prepped-for-direct-archiving, '/[^/]+$', '/')"/>
         <xsl:variable name="number-of-components" select="count($archive-components)"/>
@@ -704,16 +706,14 @@
         <!-- In this function, the target subdirectory for the archive must already exist, or else you might get an error. -->
         <xsl:param name="archive-components" as="document-node()*"/>
         <xsl:param name="resolved-uri" as="xs:string"/>
-        <!-- We prep the URI to have zip: at the front and the !/ at the end (elements that might already be present) -->
-        <xsl:variable name="this-prefix"
-            select="
-                if (matches($resolved-uri, '^zip:', '')) then
-                    ()
-                else
-                    'zip:'"
-        />
+        <!-- Note, we move from the jar: protocol to the zip: protocol. The jar: protocol works fine for reading via 
+        Saxon HE on the command line, but it will not write with either the jar: or zip: protocol. In oXygen, however,
+        writing is possible using the zip: protocol (their proprietary protocol), but not the jar: one. See 
+        https://www.oxygenxml.com/forum/post39232.html -->
+        <!-- We prep the URI to have jar: at the front and the !/ at the end (elements that might already be present) -->
+        <xsl:variable name="resolved-uri-pass-1" select="'zip:' || replace($resolved-uri, '^jar:', '')"/>
         <xsl:variable name="uri-prepped-for-zipping"
-            select="$this-prefix || replace($resolved-uri, '(.+?)[!/]*$', '$1!/')"/>
+            select="replace($resolved-uri-pass-1, '(.+?)[!/]*$', '$1!/')"/>
         <xsl:variable name="binary-archive-components" select="$archive-components[_base64Binary]"/>
         <xsl:for-each select="$archive-components/*[@_archive-path][not(self::_base64Binary)]">
             <xsl:if test="$comment-on-saved-archives">
