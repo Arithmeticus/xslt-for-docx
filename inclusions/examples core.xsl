@@ -146,6 +146,7 @@
     </xsl:function>
     
     <!-- CONVERSION TO PLAIN TEXT -->
+    
     <xsl:template match="*" mode="archive-to-plain-text">
         <xsl:apply-templates mode="#current"/>
     </xsl:template>
@@ -294,7 +295,17 @@
         <xsl:variable name="this-n" select="@n"/>
         <xsl:variable name="these-items-to-insert" select="$items-to-insert[@n = $this-n]/node()"/>
         <xsl:variable name="delete-me" select="$this-n = $characters-to-delete/@n"/>
-        <xsl:copy-of select="$these-items-to-insert"/>
+        <xsl:choose>
+            <xsl:when test="not(exists($these-items-to-insert))"/>
+            <xsl:when test="exists(w:tab) or exists(w:br) or exists(w:noBreakHyphen) or exists(w:softHyphen)">
+                <w:t>
+                    <xsl:copy-of select="$these-items-to-insert"/>
+                </w:t>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="$these-items-to-insert"/>
+            </xsl:otherwise>
+        </xsl:choose>
         <xsl:if test="not($delete-me)">
             <xsl:apply-templates mode="#current"/>
         </xsl:if>
