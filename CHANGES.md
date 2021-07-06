@@ -21,3 +21,8 @@
 - `@jar-path` renamed `@_archive-path`, to signal the temporary nature of the attribute and to point to the general nature of archives.
 - Wholly rewrote most of the code, and wrote completely new stylesheets for the examples.
 - Wrote `tan:map-to-xml()` but did not try to do the reverse. That may be included in a future release, if there is need.  
+
+## Maintenance
+
+- 2021-07-06: removed `tan:map-to-xml()`, now extended and much better supported in the [TAN function library](http://textalign.net).
+- 2021-07-06: added visibility to every function.
