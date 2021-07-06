@@ -49,7 +49,7 @@
 
     <!-- These XSLT functions allow one to extract the component parts an archive and to rearchive and save those 
         component parts, perhaps after some transformation. 
-             I wrote these functions partly because I needed to develop workflows that needed to convert to and from 
+             I wrote these functions partly because I needed to develop workflows that converted to and from 
         Word and Excel, and partly because I was frustrated with some limitations of Microsoft Word and Excel. It is 
         widely known only among specialists that Word (docx) and Excel (xslx) are merely compressed archives. If you
         take a docx file and change its extension to zip, you can decompress it like any other zip file, and look at its 
@@ -90,32 +90,7 @@
     
     <!-- ANCILLARY UTILITY FUNCTIONS -->
 
-    <xsl:function name="tan:map-to-xml" as="element()*">
-        <!-- Input: any items -->
-        <!-- Output: any maps in each item serialized as XML elements -->
-        <!-- For those accustomed to handling ordinary XML nodes, maps can be frustrating to work with.
-        This function allows one to change a map to XML, and do fun things with it, without requiring
-        map functions. -->
-        <xsl:param name="items-to-convert" as="item()*"/>
-        <xsl:apply-templates select="$items-to-convert" mode="map-to-xml"/>
-    </xsl:function>
-    <xsl:template match=".[. instance of map(*)]" mode="map-to-xml">
-        <xsl:variable name="this-map" select="." as="map(*)"/>
-        <map>
-            <xsl:for-each select="map:keys(.)">
-                <entry>
-                    <key>
-                        <xsl:copy-of select="."/>
-                    </key>
-                    <value>
-                        <xsl:apply-templates select="$this-map(.)" mode="#current"/>
-                    </value>
-                </entry>
-            </xsl:for-each>
-        </map>
-    </xsl:template>
-    
-    <xsl:function name="tan:extract-map" as="map(xs:string,map(xs:string,item()?))" 
+    <xsl:function name="tan:extract-map" as="map(xs:string,map(xs:string,item()?))" visibility="private"
         use-when="$advanced-functions-available">
         <!-- Input: an archive in xs:base64Binary, entries as maps -->
         <!-- Output: the entries with the content entries set to binary or decoded string data for the appropriate entry in the archive. -->
@@ -191,12 +166,13 @@
                             <xsl:map-entry key="'diagnostics'">
                                 <diagnostics>
                                     <diag-key><xsl:copy-of select="$this-key"/></diag-key>
-                                    <diag-entry><xsl:copy-of select="tan:map-to-xml($this-entry)"/></diag-entry>
+                                    <!-- tan:map-to-xml() can be found in the TAN function library -->
+                                    <!--<diag-entry><xsl:copy-of select="tan:map-to-xml($this-entry)"/></diag-entry>-->
                                     <diag-data><xsl:copy-of select="$this-data"/></diag-data>
                                     <diag-is-plain-text><xsl:value-of select="$this-entry-content-is-plain-text"/></diag-is-plain-text>
                                     <diag-encoding><xsl:value-of select="$this-encoding"/></diag-encoding>
                                     <diag-is-marked-as-compressed><xsl:value-of select="$this-entry-content-is-marked-as-compressed"/></diag-is-marked-as-compressed>
-                                    <diag-data-entries><xsl:copy-of select="tan:map-to-xml($these-data-entries)"/></diag-data-entries>
+                                    <!--<diag-data-entries><xsl:copy-of select="tan:map-to-xml($these-data-entries)"/></diag-data-entries>-->
                                     <diag-is-itself-an-archive><xsl:value-of select="$this-entry-content-is-itself-an-archive"/></diag-is-itself-an-archive>
                                     <diag-data-as-string><xsl:value-of select="$this-data-as-decoded-string"/></diag-data-as-string>
                                     <diag-is-encoded-text><xsl:value-of select="$this-entry-content-is-encoded-text"/></diag-is-encoded-text>
@@ -241,7 +217,7 @@
         </xsl:map>
     </xsl:function>
     
-    <xsl:function name="tan:get-uri-from-item" as="xs:string?">
+    <xsl:function name="tan:get-uri-from-item" as="xs:string?" visibility="private">
         <!-- Input: an item that has string content pointing to a resolved URI -->
         <!-- Output: the resolved URI -->
         <!-- A user may want to be flexible in what gets sent to a function, e.g., an element, <a href=""/>, or
@@ -261,17 +237,17 @@
     
     <!-- CHECKING DOCX/XLSX/ARCHIVES -->
     
-    <xsl:function name="tan:xlsx-file-available" as="xs:boolean">
+    <xsl:function name="tan:xlsx-file-available" as="xs:boolean" visibility="public">
         <!-- Alias for the function below -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:copy-of select="tan:archive-available($element-with-attr-href-or-string-with-resolved-uri)"/>
     </xsl:function>
-    <xsl:function name="tan:docx-file-available" as="xs:boolean">
+    <xsl:function name="tan:docx-file-available" as="xs:boolean" visibility="public">
         <!-- Alias for the function below -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:copy-of select="tan:archive-available($element-with-attr-href-or-string-with-resolved-uri)"/>
     </xsl:function>
-    <xsl:function name="tan:archive-available" as="xs:boolean"
+    <xsl:function name="tan:archive-available" as="xs:boolean" visibility="public"
         use-when="$advanced-functions-available">
         <!-- Input: any element with an @href, or a string value (or something castable to a string) -->
         <!-- Output: a boolean indicating whether the document is available -->
@@ -293,7 +269,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
-    <xsl:function name="tan:archive-available" as="xs:boolean" use-when="not($advanced-functions-available)">
+    <xsl:function name="tan:archive-available" as="xs:boolean" use-when="not($advanced-functions-available)" visibility="public">
         <!-- Input: any element with an @href, or a string value (or something castable to a string) -->
         <!-- Output: a boolean indicating whether the document is available -->
         <!-- Note, this version of the function, i.e., the one without advanced functions, cannot fetch a uri collection from
@@ -312,7 +288,7 @@
 
     <!-- OPENING DOCX/XLSX/ARCHIVES -->
     
-    <xsl:function name="tan:open-raw-archive" use-when="$advanced-functions-available" as="xs:base64Binary?">
+    <xsl:function name="tan:open-raw-archive" use-when="$advanced-functions-available" as="xs:base64Binary?" visibility="public">
         <!-- Input: an item pointing to a URI -->
         <!-- Output: the contents of the target archive as base 64 binary-->
         <!-- This function is basically a padded alternative to file:read-binary() -->
@@ -324,12 +300,12 @@
             <xsl:otherwise>
                 <xsl:variable name="archive-as-base64Binary" as="xs:base64Binary"
                     select="file:read-binary($source-uri)"/>
-                <xsl:copy-of select="$archive-as-base64Binary"/>
+                <xsl:sequence select="$archive-as-base64Binary"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
     
-    <xsl:function name="tan:entries-map" use-when="$advanced-functions-available"
+    <xsl:function name="tan:entries-map" use-when="$advanced-functions-available" visibility="private"
         as="map(xs:string,map(xs:string,item()*))?">
         <!-- Input: an item pointing to a resolved uri -->
         <!-- Output: a map of entries for the archive (if it exists). -->
@@ -351,7 +327,7 @@
     
     
 
-    <xsl:function name="tan:archive-map-to-xml" as="document-node()*"
+    <xsl:function name="tan:archive-map-to-xml" as="document-node()*" visibility="private"
         use-when="$advanced-functions-available">
         <!-- Input: an archive map, created by tan:extract-map(); a uri specifying the archive's base uri -->
         <!-- Output: each entry content converted to a document, with the base uri and component local component path bound 
@@ -377,6 +353,7 @@
                 as="item()?"/>
             <xsl:variable name="this-component-content-is-map"
                 select="$this-component-content instance of map(xs:string,map(xs:string,item()?))"/>
+            
             <xsl:choose>
                 <xsl:when test="$this-component-content-type = 'binary'">
                     <xsl:document>
@@ -412,6 +389,7 @@
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
+                    
                     <xsl:for-each select="$this-content-parsed">
                         <xsl:document>
                             <xsl:for-each select="node()">
@@ -422,6 +400,9 @@
                                             <xsl:copy-of select="$this-archive-path-attr, $this-xml-base-attr"/>
                                             <xsl:copy-of select="node()"/>
                                         </xsl:copy>
+                                    </xsl:when>
+                                    <xsl:when test=". instance of document-node()">
+                                        <xsl:copy-of select="node()"/>
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:copy-of select="."/>
@@ -435,26 +416,26 @@
                     <xsl:message select="'The component at ' || $this-component-path || ' is not one of the predefined content types (text, binary, archive), and it is not a map. Please fix.'"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:copy-of select="tan:archive-map-to-xml($this-component-content, $archive-base-uri, $local-archive-directory || $this-component-path || '/' )"/>
+                    <xsl:sequence select="tan:archive-map-to-xml($this-component-content, $archive-base-uri, $local-archive-directory || $this-component-path || '/' )"/>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:for-each>
     </xsl:function>
     
     
-    <xsl:function name="tan:open-docx" as="document-node()*">
+    <xsl:function name="tan:open-docx" as="document-node()*" visibility="public">
         <!-- alias for tan:open-archive() -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:sequence select="tan:open-archive($element-with-attr-href-or-string-with-resolved-uri)"
         />
     </xsl:function>
-    <xsl:function name="tan:open-xlsx" as="document-node()*">
+    <xsl:function name="tan:open-xlsx" as="document-node()*" visibility="public">
         <!-- alias for tan:open-archive() -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:sequence select="tan:open-archive($element-with-attr-href-or-string-with-resolved-uri)"
         />
     </xsl:function>
-    <xsl:function name="tan:open-archive" as="document-node()*"
+    <xsl:function name="tan:open-archive" as="document-node()*" visibility="public"
         use-when="$advanced-functions-available">
         <!-- Input: any element with an @href, or a string value (or something castable to a string); a string specifying the type of file to be opened -->
         <!-- Output: the components of the target docx or xslx file as a sequence of XML documents (the main .rels file first, then the document .rels, then the source content types, then every file ending in .xml). To facilitate the reconstruction of the Word file, every extracted document will be stamped with @_archive-path, with the local path and name of the component. -->
@@ -482,18 +463,19 @@
         />
         
         <xsl:variable name="these-archive-keys" select="map:keys($this-archive-map-with-content)"/>
+        
         <xsl:choose>
             <xsl:when test="string-length($source-uri) lt 1 or not(file:exists($source-uri))"/>
             <xsl:when test="not(exists($these-archive-keys))">
                 <xsl:message select="$source-uri || ' appears not to be a valid archive.'"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:copy-of select="tan:archive-map-to-xml($this-archive-map-with-content, $source-archive-uri, ())"/>
+                <xsl:sequence select="tan:archive-map-to-xml($this-archive-map-with-content, $source-archive-uri, ())"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
     
-    <xsl:function name="tan:open-archive" as="document-node()*" use-when="not($advanced-functions-available)">
+    <xsl:function name="tan:open-archive" as="document-node()*" use-when="not($advanced-functions-available)" visibility="public">
         <!-- Input: any element with an @href, or a string value (or something castable to a string); a string specifying the type of file to be opened -->
         <!-- Output: the components of the target docx or xslx file as a sequence of XML documents (the main .rels file first, then the document .rels, then the source content types, then every file ending in .xml). To facilitate the reconstruction of the Word file, every extracted document will be stamped with @_archive-path, with the local path and name of the component. -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
@@ -516,7 +498,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:function>
-    <xsl:function name="tan:open-archive-loop" as="document-node()*" use-when="not($advanced-functions-available)">
+    <xsl:function name="tan:open-archive-loop" as="document-node()*" use-when="not($advanced-functions-available)" visibility="private">
         <!-- Input: a base uri for a archive; a sequence of strings of uris relative to the base uri -->
         <!-- Output: each component found converted to a document; for each component found, a search will be made for _rels/[NAME].rels
         and the function will be run recursively against any @Target that is found-->
@@ -560,7 +542,7 @@
         </xsl:for-each>
     </xsl:function>
 
-    <xsl:function name="tan:extract-archive-component" as="document-node()?"
+    <xsl:function name="tan:extract-archive-component" as="document-node()?" visibility="private"
         use-when="not($advanced-functions-available)">
         <!-- Input: the base archive uri for a Word/Excel document; a path to a component part of a Word document -->
         <!-- Output: the XML document itself, but with @_archive-path stamped into the root element -->
@@ -600,19 +582,19 @@
         version of open-and-save-docx.xsl did not have a tan:save-docx(). This version does, but 
         only for the Saxon PE/EE versions, and as a pass-through to the named template.  -->
 
-    <xsl:function name="tan:save-docx" use-when="$advanced-functions-available">
+    <xsl:function name="tan:save-docx" use-when="$advanced-functions-available" visibility="public">
         <!-- Alias for the function below -->
         <xsl:param name="archive-components" as="document-node()*"/>
         <xsl:param name="resolved-uri" as="xs:string"/>
         <xsl:sequence select="tan:save-archive($archive-components, $resolved-uri)"/>
     </xsl:function>
-    <xsl:function name="tan:save-xlsx" use-when="$advanced-functions-available">
+    <xsl:function name="tan:save-xlsx" use-when="$advanced-functions-available" visibility="public">
         <!-- Alias for the function below -->
         <xsl:param name="archive-components" as="document-node()*"/>
         <xsl:param name="resolved-uri" as="xs:string"/>
         <xsl:sequence select="tan:save-archive($archive-components, $resolved-uri)"/>
     </xsl:function>
-    <xsl:function name="tan:save-archive" use-when="$advanced-functions-available">
+    <xsl:function name="tan:save-archive" use-when="$advanced-functions-available" visibility="public">
         <!-- Alias for the named template, below -->
         <xsl:param name="archive-components" as="document-node()*"/>
         <xsl:param name="resolved-uri" as="xs:string"/>
@@ -671,7 +653,7 @@
                         <xsl:otherwise>
                             <xsl:variable name="this-doc-cleaned-up" as="document-node()">
                                 <xsl:document>
-                                    <xsl:apply-templates select="." mode="clean-up-archive"/>
+                                    <xsl:apply-templates select="." mode="tan:clean-up-archive"/>
                                 </xsl:document>
                             </xsl:variable>
                             <xsl:variable name="this-doc-serialized" select="serialize($this-doc-cleaned-up)"/>
@@ -722,7 +704,7 @@
             <xsl:result-document href="{$uri-prepped-for-zipping || @_archive-path}"
                 format="open-and-save-docx">
                 <xsl:document>
-                    <xsl:apply-templates select="." mode="clean-up-archive"/>
+                    <xsl:apply-templates select="." mode="tan:clean-up-archive"/>
                 </xsl:document>
             </xsl:result-document>
         </xsl:for-each>
@@ -740,17 +722,9 @@
         <xsl:apply-imports/>
     </xsl:template>-->
 
-    <xsl:template match="document-node()" mode="clean-up-archive map-to-xml">
-        <xsl:document>
-            <xsl:apply-templates mode="#current"/>
-        </xsl:document>
-    </xsl:template>
-    <xsl:template match="node() | @*" mode="clean-up-archive map-to-xml">
-        <xsl:copy>
-            <xsl:apply-templates select="node() | @*" mode="#current"/>
-        </xsl:copy>
-    </xsl:template>
-    <xsl:template match="@_archive-path | @xml:base" mode="clean-up-archive"/>
+    <xsl:mode name="tan:clean-up-archive" on-no-match="shallow-copy"/>
+
+    <xsl:template match="@_archive-path | @xml:base" mode="tan:clean-up-archive"/>
     
     
 </xsl:stylesheet>
