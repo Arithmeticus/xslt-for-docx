@@ -252,6 +252,7 @@
         <!-- Input: any element with an @href, or a string value (or something castable to a string) -->
         <!-- Output: a boolean indicating whether the document is available -->
         <!-- The input url must be resolved. -->
+        <!--kw: files, archives -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
@@ -277,6 +278,7 @@
              and xlsx files, this function looks only for the signature _rels/.rels.  -->
         <!-- The input url must be resolved. -->
         <!-- We use the protocol jar: because it is recognized both by oXygen and by Saxon run on the command line -->
+        <!--kw: files, archives -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
@@ -292,6 +294,7 @@
         <!-- Input: an item pointing to a URI -->
         <!-- Output: the contents of the target archive as base 64 binary-->
         <!-- This function is basically a padded alternative to file:read-binary() -->
+        <!--kw: files, archives -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string?"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
@@ -424,13 +427,15 @@
     
     
     <xsl:function name="tan:open-docx" as="document-node()*" visibility="public">
-        <!-- alias for tan:open-archive() -->
+        <!-- Alias for the function below, tan:open-archive() -->
+        <!--kw: files, archives -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:sequence select="tan:open-archive($element-with-attr-href-or-string-with-resolved-uri)"
         />
     </xsl:function>
     <xsl:function name="tan:open-xlsx" as="document-node()*" visibility="public">
-        <!-- alias for tan:open-archive() -->
+        <!-- Alias for the function below, tan:open-archive() -->
+        <!--kw: files, archives -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:sequence select="tan:open-archive($element-with-attr-href-or-string-with-resolved-uri)"
         />
@@ -439,6 +444,7 @@
         use-when="$advanced-functions-available">
         <!-- Input: any element with an @href, or a string value (or something castable to a string); a string specifying the type of file to be opened -->
         <!-- Output: the components of the target docx or xslx file as a sequence of XML documents (the main .rels file first, then the document .rels, then the source content types, then every file ending in .xml). To facilitate the reconstruction of the Word file, every extracted document will be stamped with @_archive-path, with the local path and name of the component. -->
+        <!--kw: files, archives -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
@@ -478,6 +484,7 @@
     <xsl:function name="tan:open-archive" as="document-node()*" use-when="not($advanced-functions-available)" visibility="public">
         <!-- Input: any element with an @href, or a string value (or something castable to a string); a string specifying the type of file to be opened -->
         <!-- Output: the components of the target docx or xslx file as a sequence of XML documents (the main .rels file first, then the document .rels, then the source content types, then every file ending in .xml). To facilitate the reconstruction of the Word file, every extracted document will be stamped with @_archive-path, with the local path and name of the component. -->
+        <!--kw: files, archives -->
         <xsl:param name="element-with-attr-href-or-string-with-resolved-uri" as="item()?"/>
         <xsl:variable name="source-uri" as="xs:string"
             select="tan:get-uri-from-item($element-with-attr-href-or-string-with-resolved-uri)"/>
@@ -595,7 +602,8 @@
         <xsl:sequence select="tan:save-archive($archive-components, $resolved-uri)"/>
     </xsl:function>
     <xsl:function name="tan:save-archive" use-when="$advanced-functions-available" visibility="public">
-        <!-- Alias for the named template, below -->
+        <!-- surrogate function for the named template, below -->
+        <!--kw: files, archives -->
         <xsl:param name="archive-components" as="document-node()*"/>
         <xsl:param name="resolved-uri" as="xs:string"/>
         <xsl:call-template name="tan:save-archive">
